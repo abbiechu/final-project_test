@@ -3,401 +3,375 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EcoPulse — SDG 12 責任消費與生產</title>
-  <link rel="stylesheet" href="css/base.css" />
+  <title>關於我們 — EcoPulse</title>
+  <link rel="stylesheet" href="../css/base.css" />
   <style>
     /* ============================================
-       Branch: feature/home  (朱家締)
-       File:   index.html
+       Branch: feature/about  (朱家締)
+       File:   pages/about.html
        ============================================ */
 
-    /* Hero */
-    .hero {
-      min-height: calc(100vh - var(--nav-h));
+    /* --- Mind Map Section --- */
+    .mindmap-section {
+      background: var(--clr-surface);
+    }
+
+    .mindmap-wrap {
       display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(160deg, #EAF3E6 0%, var(--clr-bg) 60%);
+      align-items: flex-start;
+      gap: var(--sp-2xl);
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 70% 40%, rgba(90,154,90,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 600px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: #DFF0DF;
-      color: var(--clr-primary);
-      border: 1px solid rgba(58,107,58,0.2);
-      border-radius: var(--radius-xl);
-      padding: 0.3rem 0.9rem;
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: var(--sp-lg);
-      animation: fadeUp 0.5s ease forwards;
-    }
-
-    .hero h1 {
-      margin-bottom: var(--sp-md);
-      animation: fadeUp 0.6s 0.1s ease both;
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--clr-primary);
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      color: var(--clr-muted);
-      max-width: 480px;
-      margin-bottom: var(--sp-xl);
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: var(--sp-md);
-      flex-wrap: wrap;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-
-    /* Floating stats */
-    .hero-stats {
-      position: absolute;
-      right: 5%;
-      top: 50%;
-      transform: translateY(-50%);
+    /* Central node */
+    .mindmap-center {
+      flex-shrink: 0;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: var(--clr-primary);
+      color: #fff;
       display: flex;
       flex-direction: column;
-      gap: var(--sp-md);
-      animation: fadeUp 0.8s 0.4s ease both;
-    }
-
-    .stat-card {
-      background: var(--clr-surface);
-      border: 1px solid var(--clr-border);
-      border-radius: var(--radius-md);
-      padding: var(--sp-md) var(--sp-lg);
-      box-shadow: var(--shadow-md);
-      text-align: center;
-      min-width: 160px;
-    }
-
-    .stat-number {
+      align-items: center;
+      justify-content: center;
       font-family: var(--ff-display);
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--clr-primary);
+      font-size: 1.1rem;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .mindmap-center span { font-size: 0.75rem; opacity: 0.8; margin-top: 4px; }
+
+    /* Node grid */
+    .mindmap-nodes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-md);
+      flex: 1;
+    }
+
+    .mind-node {
+      background: var(--clr-surface);
+      border: 2px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: var(--sp-lg);
+      cursor: pointer;
+      transition: border-color var(--t-normal), box-shadow var(--t-normal), transform var(--t-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mind-node:hover,
+    .mind-node.open {
+      border-color: var(--clr-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .mind-node-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+      margin-bottom: var(--sp-sm);
+    }
+
+    .mind-node-icon {
+      font-size: 1.4rem;
+      width: 40px; height: 40px;
+      background: #DFF0DF;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .mind-node h3 { font-size: 1rem; margin: 0; }
+
+    .mind-node-body {
+      font-size: 0.87rem;
+      color: var(--clr-muted);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--t-slow), opacity var(--t-slow);
+      opacity: 0;
+    }
+
+    .mind-node.open .mind-node-body {
+      max-height: 200px;
+      opacity: 1;
+    }
+
+    .mind-node-toggle {
+      position: absolute;
+      top: var(--sp-md);
+      right: var(--sp-md);
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--clr-primary);
+      color: #fff;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform var(--t-normal);
       line-height: 1;
     }
 
-    .stat-label {
-      font-size: 0.78rem;
-      color: var(--clr-muted);
-      margin-top: 4px;
-    }
+    .mind-node.open .mind-node-toggle { transform: rotate(45deg); }
 
-    /* Scroll indicator */
-    .scroll-hint {
-      position: absolute;
-      bottom: var(--sp-xl);
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      color: var(--clr-muted);
-      font-size: 0.78rem;
-      animation: fadeUp 1s 0.8s ease both;
-    }
-
-    .scroll-arrow {
-      width: 24px; height: 24px;
-      border-right: 2px solid var(--clr-muted);
-      border-bottom: 2px solid var(--clr-muted);
-      transform: rotate(45deg);
-      animation: bounce 1.5s ease infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: rotate(45deg) translateY(0); }
-      50%       { transform: rotate(45deg) translateY(6px); }
-    }
-
-    /* About SDG Section */
-    .sdg-grid {
+    /* --- Team Section --- */
+    .team-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: var(--sp-xl);
-      align-items: center;
     }
 
-    .sdg-text h2 { margin-bottom: var(--sp-md); }
-    .sdg-text p  { color: var(--clr-muted); margin-bottom: var(--sp-md); }
-
-    .sdg-goals {
-      display: flex;
-      flex-direction: column;
-      gap: var(--sp-sm);
+    .team-card {
+      text-align: center;
+      padding: var(--sp-2xl) var(--sp-lg);
     }
 
-    .sdg-goal-item {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--sp-md);
-      padding: var(--sp-md);
-      background: var(--clr-surface);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--clr-border);
-    }
-
-    .sdg-icon {
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      width: 44px; height: 44px;
+    .avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-primary-lt), var(--clr-accent));
+      margin: 0 auto var(--sp-md);
       display: flex; align-items: center; justify-content: center;
-      background: #DFF0DF;
-      border-radius: var(--radius-sm);
-    }
-
-    .sdg-goal-item strong { display: block; margin-bottom: 2px; font-size: 0.92rem; }
-    .sdg-goal-item span   { font-size: 0.83rem; color: var(--clr-muted); }
-
-    /* Site features */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: var(--sp-lg);
-    }
-
-    .feature-card {
-      text-align: center;
-      padding: var(--sp-xl) var(--sp-lg);
-    }
-
-    .feature-icon {
-      font-size: 2.2rem;
-      margin-bottom: var(--sp-md);
-      display: block;
-    }
-
-    .feature-card h3 { font-size: 1.05rem; margin-bottom: var(--sp-sm); }
-    .feature-card p  { font-size: 0.87rem; color: var(--clr-muted); }
-
-    /* CTA strip */
-    .cta-strip {
-      background: var(--clr-primary);
-      border-radius: var(--radius-xl);
-      padding: var(--sp-2xl) var(--sp-xl);
-      text-align: center;
+      font-size: 2rem;
       color: #fff;
     }
 
-    .cta-strip h2 { color: #fff; margin-bottom: var(--sp-md); }
-    .cta-strip p  { color: rgba(255,255,255,0.75); margin-bottom: var(--sp-xl); }
+    .team-card h3 { font-size: 1.05rem; margin-bottom: 4px; }
+    .team-card .role {
+      font-size: 0.82rem;
+      color: var(--clr-primary);
+      font-weight: 600;
+      margin-bottom: var(--sp-sm);
+    }
+    .team-card p { font-size: 0.85rem; color: var(--clr-muted); }
 
-    /* Footer */
-    .footer {
-      background: var(--clr-dark);
-      color: rgba(255,255,255,0.6);
-      padding: var(--sp-xl) 0;
-      text-align: center;
-      font-size: 0.85rem;
+    /* --- Values Section --- */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-lg);
     }
 
-    .footer a { color: rgba(255,255,255,0.8); }
-    .footer a:hover { color: #fff; }
+    .value-card {
+      border-top: 4px solid var(--clr-primary);
+    }
+
+    .value-card .num {
+      font-family: var(--ff-display);
+      font-size: 2.5rem;
+      color: var(--clr-border);
+      line-height: 1;
+      margin-bottom: var(--sp-sm);
+    }
+
+    .value-card h3 { margin-bottom: var(--sp-sm); font-size: 1.05rem; }
+    .value-card p  { font-size: 0.87rem; color: var(--clr-muted); }
 
     /* Responsive */
-    @media (max-width: 900px) {
-      .hero-stats { display: none; }
-    }
-
-    @media (max-width: 640px) {
-      .sdg-grid { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      .mindmap-wrap  { flex-direction: column; align-items: center; }
+      .mindmap-center { margin-top: 0; }
+      .team-grid     { grid-template-columns: 1fr; }
+      .values-grid   { grid-template-columns: 1fr; }
+      .mindmap-nodes { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <script src="js/navbar.js"></script>
-  <script src="css/base.css" defer></script>
+  <script src="../js/navbar.js"></script>
 
-  <!-- Navbar injected by JS -->
-
-  <!-- ===== HERO ===== -->
-  <section class="hero">
+  <!-- ===== PAGE HERO ===== -->
+  <section class="section" style="background:linear-gradient(160deg,#EAF3E6 0%,var(--clr-bg) 70%); padding-bottom:var(--sp-xl)">
     <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">🌱 SDG 12 · 責任消費與生產</div>
-        <h1>讓消費習慣<br />成為<em>地球的解方</em></h1>
-        <p>EcoPulse 透過數據視覺化與互動測驗，幫助你了解自身消費行為對環境的影響，並提供切實可行的改善建議。</p>
-        <div class="hero-actions">
-          <a href="pages/quiz.html" class="btn btn-primary">🧪 開始環保測驗</a>
-          <a href="pages/issues.html" class="btn btn-outline">瞭解問題 →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Floating stats -->
-    <div class="hero-stats">
-      <div class="stat-card">
-        <div class="stat-number">1/3</div>
-        <div class="stat-label">全球食物生產遭到浪費</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">400萬</div>
-        <div class="stat-label">公噸塑膠每年流入海洋</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">SDG<br/>12</div>
-        <div class="stat-label">永續發展目標</div>
-      </div>
-    </div>
-
-    <div class="scroll-hint">
-      <span>向下瀏覽</span>
-      <div class="scroll-arrow"></div>
-    </div>
-  </section>
-
-  <!-- ===== ABOUT SDG 12 ===== -->
-  <section class="section" style="background: var(--clr-surface);">
-    <div class="container">
-      <div class="sdg-grid">
-        <div class="sdg-text fade-up">
-          <span class="badge badge-green" style="margin-bottom:var(--sp-md)">關於 SDG 12</span>
-          <h2>什麼是責任消費<br/>與生產？</h2>
-          <p>SDG 12 是聯合國 17 項永續發展目標之一，核心在於改變我們生產與消費的方式——使用更少資源、製造更少廢棄物、讓物品的全生命週期都更永續。</p>
-          <p>現代社會面臨的問題包括：過度消費、快時尚、電子垃圾、塑膠污染與食物浪費。唯有每個人從日常小事改變，才能形成集體影響力。</p>
-          <a href="pages/about.html" class="btn btn-outline" style="margin-top:var(--sp-md)">認識我們的計畫 →</a>
-        </div>
-
-        <div class="sdg-goals fade-up">
-          <div class="sdg-goal-item">
-            <div class="sdg-icon">♻️</div>
-            <div>
-              <strong>資源循環</strong>
-              <span>到 2030 年大幅減少廢棄物，推動循環經濟模式</span>
-            </div>
-          </div>
-          <div class="sdg-goal-item">
-            <div class="sdg-icon">🌾</div>
-            <div>
-              <strong>減少食物浪費</strong>
-              <span>全球零售與消費端的食物浪費減半</span>
-            </div>
-          </div>
-          <div class="sdg-goal-item">
-            <div class="sdg-icon">🏭</div>
-            <div>
-              <strong>永續生產</strong>
-              <span>企業採用永續實踐，揭露永續發展資訊</span>
-            </div>
-          </div>
-          <div class="sdg-goal-item">
-            <div class="sdg-icon">📚</div>
-            <div>
-              <strong>消費者教育</strong>
-              <span>提升大眾永續發展意識，促成行為改變</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== SITE FEATURES ===== -->
-  <section class="section">
-    <div class="container">
-      <div style="text-align:center; margin-bottom:var(--sp-2xl)">
-        <h2 class="section-title">網站功能一覽</h2>
-        <p class="section-subtitle" style="margin: 0 auto">四個互動功能，帶你全方位了解責任消費與生產</p>
-      </div>
-      <div class="features-grid">
-        <div class="card feature-card">
-          <span class="feature-icon">🏠</span>
-          <h3>首頁介紹</h3>
-          <p>快速了解 SDG 12 核心概念與本站宗旨</p>
-        </div>
-        <a href="pages/about.html" class="card feature-card" style="display:block">
-          <span class="feature-icon">🗺️</span>
-          <h3>關於我們</h3>
-          <p>互動心智圖，探索 EcoPulse 的背景與核心價值</p>
-        </a>
-        <a href="pages/issues.html" class="card feature-card" style="display:block">
-          <span class="feature-icon">⚠️</span>
-          <h3>問題與解方</h3>
-          <p>翻牌卡片互動，深入瞭解六大環境問題與對策</p>
-        </a>
-        <a href="pages/quiz.html" class="card feature-card" style="display:block">
-          <span class="feature-icon">📊</span>
-          <h3>環保測驗</h3>
-          <p>20 題專業測驗，量化你的環保指數並給出個人化建議</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CTA ===== -->
-  <section class="section">
-    <div class="container">
-      <div class="cta-strip">
-        <h2>準備好測測你的環保指數了嗎？</h2>
-        <p>只需 5 分鐘，回答 20 道日常生活問題，取得你的專屬環保雷達圖與改善建議。</p>
-        <a href="pages/quiz.html" class="btn" style="background:#fff; color:var(--clr-primary); font-weight:700">
-          立即開始測驗 →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="container">
-      <p>🌿 EcoPulse &nbsp;|&nbsp; SDG 12 責任消費與生產 &nbsp;|&nbsp; 資管二B &nbsp;·&nbsp; 祝善煦 · 朱家締 · 羅乃慈</p>
-      <p style="margin-top:0.4rem; font-size:0.78rem">
-        資料來源：
-        <a href="https://sdgs.un.org/goals/goal12" target="_blank">UN SDGs</a> ·
-        <a href="https://www.epa.gov.tw" target="_blank">行政院環保署</a> ·
-        <a href="https://www.greenpeace.org" target="_blank">Greenpeace</a> ·
-        <a href="https://www.worldbank.org" target="_blank">World Bank</a>
+      <span class="badge badge-green" style="margin-bottom:var(--sp-md)">關於我們</span>
+      <h1 style="max-width:520px">EcoPulse 的<br/>理念與故事</h1>
+      <p style="max-width:480px; color:var(--clr-muted); margin-top:var(--sp-md); font-size:1.05rem">
+        我們是三位資管系學生，希望用科技讓永續消費的概念變得具體、可量化、可行動。
       </p>
+    </div>
+  </section>
+
+  <!-- ===== MIND MAP ===== -->
+  <section class="section mindmap-section">
+    <div class="container">
+      <h2 class="section-title">互動心智圖</h2>
+      <p class="section-subtitle">點擊各節點展開詳細說明</p>
+
+      <div class="mindmap-wrap">
+        <div class="mindmap-center">
+          <span style="font-size:2rem">🌿</span>
+          ECO<br/>PULSE
+          <span>關於我們</span>
+        </div>
+
+        <div class="mindmap-nodes">
+          <!-- Node 1 -->
+          <div class="mind-node" onclick="toggleNode(this)">
+            <div class="mind-node-toggle">+</div>
+            <div class="mind-node-header">
+              <div class="mind-node-icon">🌱</div>
+              <h3>核心背景</h3>
+            </div>
+            <div class="mind-node-body">
+              全球每年產生約 20 億噸固體廢棄物，其中超過 30% 未妥善處理。SDG 12 強調必須從根源改變生產與消費模式，EcoPulse 的誕生正是回應這個迫切需求。
+            </div>
+          </div>
+
+          <!-- Node 2 -->
+          <div class="mind-node" onclick="toggleNode(this)">
+            <div class="mind-node-toggle">+</div>
+            <div class="mind-node-header">
+              <div class="mind-node-icon">💡</div>
+              <h3>網站特色</h3>
+            </div>
+            <div class="mind-node-body">
+              提供環保雷達圖與個人化建議；結合互動任務讓減碳行動變得好玩又簡單。不同於靜態介紹，我們強調使用者參與與即時回饋。
+            </div>
+          </div>
+
+          <!-- Node 3 -->
+          <div class="mind-node" onclick="toggleNode(this)">
+            <div class="mind-node-toggle">+</div>
+            <div class="mind-node-header">
+              <div class="mind-node-icon">⚠️</div>
+              <h3>問題意識</h3>
+            </div>
+            <div class="mind-node-body">
+              現代消費社會存在三大核心問題：過度消費導致資源耗竭、塑膠污染危害生態、食物浪費加劇碳排放。這些問題彼此連動，需要系統性的行為改變。
+            </div>
+          </div>
+
+          <!-- Node 4 -->
+          <div class="mind-node" onclick="toggleNode(this)">
+            <div class="mind-node-toggle">+</div>
+            <div class="mind-node-header">
+              <div class="mind-node-icon">🎯</div>
+              <h3>團隊目標</h3>
+            </div>
+            <div class="mind-node-body">
+              讓每位訪客在 5 分鐘內清楚自己的消費足跡，並帶走至少 1 個可立即實踐的改善行動。讓資訊可量化、建議可執行、改變可持續。
+            </div>
+          </div>
+
+          <!-- Node 5 -->
+          <div class="mind-node" onclick="toggleNode(this)">
+            <div class="mind-node-toggle">+</div>
+            <div class="mind-node-header">
+              <div class="mind-node-icon">💎</div>
+              <h3>核心價值</h3>
+            </div>
+            <div class="mind-node-body">
+              透明（資料來源公開可查）、互動（不是說教，而是對話）、行動導向（每個建議都能在本週實踐）。
+            </div>
+          </div>
+
+          <!-- Node 6 -->
+          <div class="mind-node" onclick="toggleNode(this)">
+            <div class="mind-node-toggle">+</div>
+            <div class="mind-node-header">
+              <div class="mind-node-icon">🌍</div>
+              <h3>我們的理念</h3>
+            </div>
+            <div class="mind-node-body">
+              環保不是犧牲生活品質，而是更聰明地消費。每一個有意識的選擇，都是給地球的一份禮物。數據讓改變可見，可見讓改變發生。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TEAM ===== -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">團隊成員</h2>
+      <p class="section-subtitle">資訊管理學系二年級 B 班</p>
+
+      <div class="team-grid">
+        <div class="card team-card">
+          <div class="avatar">🧑‍💻</div>
+          <h3>朱家締</h3>
+          <div class="role">學號 113403532</div>
+          <p class="role" style="color:var(--clr-accent); margin-bottom:var(--sp-sm)">首頁 & 關於我們</p>
+          <p>負責整體網站架構設計、首頁視覺規劃，以及關於我們的互動心智圖實作。</p>
+        </div>
+
+        <div class="card team-card">
+          <div class="avatar" style="background:linear-gradient(135deg,#8B4513,#D4A843)">🌿</div>
+          <h3>羅乃慈</h3>
+          <div class="role">學號 113403533</div>
+          <p class="role" style="color:var(--clr-accent); margin-bottom:var(--sp-sm)">問題區 & 翻牌卡片</p>
+          <p>負責六大環境問題的內容研究、翻牌卡片互動設計，以及解決方案展示介面。</p>
+        </div>
+
+        <div class="card team-card">
+          <div class="avatar" style="background:linear-gradient(135deg,#2C6B6B,#3A9A9A)">📊</div>
+          <h3>祝善煦</h3>
+          <div class="role">學號 113403042</div>
+          <p class="role" style="color:var(--clr-accent); margin-bottom:var(--sp-sm)">環保測驗系統</p>
+          <p>負責 20 題環保測驗設計、計分邏輯、雷達圖視覺化，以及個人化建議演算法。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VALUES ===== -->
+  <section class="section" style="background: var(--clr-surface)">
+    <div class="container">
+      <h2 class="section-title">設計原則</h2>
+      <p class="section-subtitle">讓複雜的環境資訊變得簡單、直覺、可行動</p>
+
+      <div class="values-grid">
+        <div class="card value-card">
+          <div class="num">01</div>
+          <h3>資訊分層</h3>
+          <p>核心概念優先呈現，細節依需求展開。避免資訊過載，讓使用者自主決定深度。</p>
+        </div>
+        <div class="card value-card">
+          <div class="num">02</div>
+          <h3>互動回饋</h3>
+          <p>每個操作都有即時視覺回應。翻牌、測驗、雷達圖——讓學習成為體驗而非閱讀。</p>
+        </div>
+        <div class="card value-card">
+          <div class="num">03</div>
+          <h3>行動導向</h3>
+          <p>不只告訴你「有問題」，更提供具體的本週可實踐行動，讓改變從今天開始。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" style="background:var(--clr-dark); color:rgba(255,255,255,0.6); padding:var(--sp-xl) 0; text-align:center; font-size:0.85rem">
+    <div class="container">
+      <p>🌿 EcoPulse &nbsp;|&nbsp; 資管二B &nbsp;·&nbsp; 祝善煦 · 朱家締 · 羅乃慈</p>
     </div>
   </footer>
 
   <script>
-    // 初始化導覽列 (root = true)
-    Navbar.init('home', true);
+    Navbar.init('about');
 
-    // Intersection Observer for fade-up
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
+    function toggleNode(el) {
+      el.classList.toggle('open');
+    }
+
+    // Animate nodes on scroll
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
         if (e.isIntersecting) {
-          e.target.style.animation = 'fadeUp 0.6s ease forwards';
+          e.target.style.animation = `fadeUp 0.5s ${i * 0.08}s ease forwards`;
           e.target.style.opacity = '1';
-          observer.unobserve(e.target);
+          obs.unobserve(e.target);
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    document.querySelectorAll('.mind-node, .team-card, .value-card').forEach(el => {
+      el.style.opacity = '0';
+      obs.observe(el);
+    });
   </script>
 </body>
 </html>
